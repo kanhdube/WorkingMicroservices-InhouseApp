@@ -29,6 +29,18 @@ rabamqp.getrsrv('rsrv_q', (msg) => {
         console.log("error saving reservation in inhouse", e);
         });
 });
+rabamqp.getrsrv('status_q',(msg) => {
+    console.log("Checking msg in InhouseApp: ", rabamqp.resultrsrv);
+    var folioForSrch = rabamqp.resultrsrv.folioNum;
+    Inhouse.findOne({folioNum : folioForSrch}, function(err, resultRsrv){
+       if (err) {return console.log("Error fetching Inhouse data for status change")}
+       else {
+            resultRsrv.status = rabamqp.resultrsrv.status;
+            resultRsrv.save();
+            }
+    });
+});
+
 app.post('/postCharges',(req, res) => {
     var chrg = new charge({
         folioNum:req.body.folioNum,

@@ -10,13 +10,13 @@ function getrsrv(que, callback) {
 			var clone = msg.content;
 			//var cloned = JSON.parse(clone.replace(/_/g,""));
 			var cloned = JSON.parse(clone);
-			//console.log(' [x] Recieved clone %s', clone);
-			//console.log(' [x] Recieved cloned %s', cloned.newname);
+			console.log(' [x] Recieved clone %s', clone);
+			console.log(' [x] Recieved cloned %s', cloned.folioNum);
  			//var keys = Object.keys(cloned);
 			//for (var i = 0; i < keys.length; i++) {
  			//		 console.log('keys....', cloned[keys[i]]);
 			//	}
-		if (typeof (que) === 'rsrv_q') {
+			if (que == 'rsrv_q') {
 			var resultrsrv = {
 				folioNum:cloned.folioNum,
       			firstName:cloned.firstName,
@@ -29,10 +29,10 @@ function getrsrv(que, callback) {
       			notes:cloned.notes
 			}; 
 		}
-		else if(typeof (que) === 'status_q') {
+		else if(que == 'status_q') {
 			var resultrsrv = {
 				folioNum:cloned.folioNum,
-      			status:cloned.status
+    			status:cloned.status
       			};
 		}
 			//console.log('resultrsrv in rabamqp: ', resultrsrv);
