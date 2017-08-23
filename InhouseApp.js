@@ -1,13 +1,15 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var rabamqp = require('./routes/rabamqp');
-
+var path = require('path');
 var {mongoose} = require('./db/mongooseInhouse');
 
 var {Inhouse} = require('./models/Inhouse');
 var {charge} = require('./models/charge');
 
 var app = express();
+app.use('/static', express.static(path.join(__dirname, '/public')))
+//app.use(express.static(__dirname+'/public'));
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 
@@ -40,6 +42,9 @@ rabamqp.getrsrv('status_q',(msg) => {
             }
     });
 });
+app.get('/inhouse',(req, res) => {
+    res.sendFile(__dirname +'/public/inhouse.html');
+});
 
 app.post('/postCharges',(req, res) => {
     var chrg = new charge({
@@ -51,9 +56,27 @@ app.post('/postCharges',(req, res) => {
     });
     chrg.save().then((result) => {
         console.log("charges are saved");
+     //   console.log('dire name is: ',__dirname);
+     //   res.sendFile(__dirname +'/public/inhouse.html');
+        res.send("Charges are saved");
      },(e)=> {
         console.log("error saving charges", e);
      });
+});
+
+app.post('/checkout',(req, res) => {
+    console.log('Checkout .......');
+    var folioForSrch = req.body.folioNum;
+    Inhouse.findOne({folioNum : folioForSrch}, function(err, resultRsrv) {
+        if(resultRsrv.status !== 'IN') {
+            res.send('folio is not Inhouse as yet');
+        }
+        else {
+            console.log('Folio is checkedout');
+            resultRsrv.status = 'CO';
+            resultRsrv.save();
+        }
+    });
 });
 
 app.listen(8081, ()=> {
