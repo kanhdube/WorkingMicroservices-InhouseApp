@@ -42,6 +42,7 @@ rabamqp.getrsrv('status_q',(msg) => {
             }
     });
 });
+
 app.get('/inhouse',(req, res) => {
     res.sendFile(__dirname +'/public/inhouse.html');
 });
@@ -75,6 +76,14 @@ app.post('/checkout',(req, res) => {
             console.log('Folio is checkedout');
             resultRsrv.status = 'CO';
             resultRsrv.save();
+            var rsrvStatus = {
+                    folioNum: folioForSrch,
+                    status: "CO"
+                };
+            var ForSend = JSON.stringify(rsrvStatus);
+            rabamqp.sendrsrv(ForSend,'chckout_q', (err,msg)=>{
+            console.log("Sent the status change to RsrvApp for Checkout", err, msg);  
+            });
         }
     });
 });
