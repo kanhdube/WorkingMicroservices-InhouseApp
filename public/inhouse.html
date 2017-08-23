@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+         <meta charset="utf-8">
+        <title> PMS System </title>
+        <script> 
+            $(document).ready(function() {
+                    $("#form").hide();$("#btnSearch").hide();$("#search").hide();
+                    $("#forSearch").click(function() {
+                         $("#search").show(); $("#btnSearch").show()
+                     });
+                     $("#forCharges").click(function() {
+                        $("#form").show()
+                    });
+                     $("#btnSearch").click(function(){
+                         console.log($("#str").val());
+                        $.post('/checkout',{folioNum : $("#str").val()}, function(data, status) {
+                            alert("Data: " + data + "\nStatus: " + status);
+                        });
+                     });
+            });
+        </script>
+    </head>
+    <body>
+        <h2> Work With Inhouse Folio </h2> <br><br>
+        <p id = "forCharges"><a href = "#form">Post Charges to Folio</a></p>
+        <p id="forSearch"> <a href="#search">Checkout An Existing Folio</a></p>
+        <p id="search"> Enter folio# <input id="str" type="text" name="searchString"></p>
+        <button type="button" id="btnSearch"> Checkout </button>
+        <form action = "http://localhost:8081/postCharges" method = "POST" target = "output" id ="form">
+            Folio#	: <input type="text" name="folioNum"> <br/><br>
+            Charge Code	: <input type="text" name="chargeCode"> <br/><br>
+            Amount	: <input type="text" name="Amount"> <br/><br>
+            Date	: <input type="text" name="postDate"> <br/><br>
+            Notes   : <input type="text" name="Notes"> <br/><br>
+            <input type="submit" name="action" value="Post Charge">   
+            <button type="button" id="checkout"> Checkout </button> <br/><br> 
+        </form>
+        </body>
+</html>
